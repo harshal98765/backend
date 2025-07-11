@@ -1,16 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+require('dotenv').config(); // 👈 Load environment variables
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // Use from env or default 5000
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/contactFormDB')
+// MongoDB connection using env variable
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log('✅ MongoDB Connected'))
   .catch((err) => console.log('❌ MongoDB connection error:', err));
 
@@ -38,4 +42,6 @@ app.post('/contact', async (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
+console.log(process.env.MONGO_URI); // Log the MongoDB URI for debugging
 });
+
